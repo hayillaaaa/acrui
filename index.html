@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Y2K Love Archive</title>
+
+<link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --pink:#ff8ad8;
+  --lav:#c7b6ff;
+  --blue:#aef4ff;
+}
+
+*{
+  box-sizing:border-box;
+  font-family:'VT323', monospace;
+}
+
+body{
+  margin:0;
+  background:linear-gradient(180deg,#ffe3f4,#e7ecff);
+  color:#222;
+}
+
+section{
+  padding:90px 20px;
+  display:flex;
+  justify-content:center;
+}
+
+.card{
+  max-width:900px;
+  width:100%;
+  background:rgba(255,255,255,0.75);
+  backdrop-filter:blur(8px);
+  border-radius:30px;
+  padding:50px 30px;
+  box-shadow:0 20px 40px rgba(0,0,0,0.15);
+}
+
+h2{
+  font-size:42px;
+  margin-bottom:30px;
+  color:#ff4fb8;
+  text-align:center;
+}
+
+/* LOCK */
+#lock{
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.lock-box{
+  background:white;
+  padding:40px;
+  border-radius:25px;
+  text-align:center;
+  box-shadow:0 0 30px rgba(255,138,216,0.6);
+}
+
+.lock-box input{
+  padding:10px;
+  font-size:22px;
+  border-radius:15px;
+  border:2px solid var(--pink);
+  width:100%;
+}
+
+.lock-box button{
+  margin-top:15px;
+  padding:10px 30px;
+  font-size:22px;
+  border:none;
+  border-radius:20px;
+  background:linear-gradient(145deg,var(--pink),var(--lav));
+  color:white;
+  cursor:pointer;
+}
+
+/* TIMER */
+.timer-area{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:30px;
+  align-items:center;
+}
+
+#timer{
+  font-size:36px;
+  background:white;
+  padding:30px;
+  border-radius:25px;
+  text-align:center;
+}
+
+/* POLAROIDS */
+.polaroid-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+  gap:20px;
+}
+
+.polaroid{
+  background:white;
+  padding:10px;
+  border-radius:5px;
+  box-shadow:0 10px 20px rgba(0,0,0,0.2);
+}
+
+.polaroid img{
+  width:100%;
+  height:120px;
+  object-fit:cover;
+}
+
+/* ENVELOPES */
+.envelopes{
+  display:flex;
+  justify-content:center;
+  gap:30px;
+  flex-wrap:wrap;
+}
+
+.envelope{
+  width:120px;
+  height:80px;
+  background:var(--pink);
+  border-radius:15px;
+  cursor:pointer;
+  position:relative;
+}
+
+.envelope:before{
+  content:'';
+  position:absolute;
+  border-left:60px solid transparent;
+  border-right:60px solid transparent;
+  border-top:45px solid #ffb3e8;
+  top:0;
+  left:0;
+}
+
+/* NOTE */
+#noteOverlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.5);
+  align-items:center;
+  justify-content:center;
+}
+
+.note{
+  background:white;
+  padding:40px;
+  border-radius:25px;
+  max-width:400px;
+  text-align:center;
+  transform:rotateX(15deg);
+}
+
+/* QUIZ */
+.quiz button{
+  display:block;
+  width:100%;
+  margin:15px 0;
+  padding:15px;
+  font-size:26px;
+  border:none;
+  border-radius:25px;
+  background:linear-gradient(145deg,var(--blue),var(--lav));
+  cursor:pointer;
+}
+
+/* GALLERY */
+.gallery-title{
+  font-size:60px;
+  color:#b96cff;
+  margin-bottom:40px;
+  text-align:center;
+}
+
+/* MUSIC */
+.browser{
+  background:white;
+  border-radius:25px;
+  box-shadow:0 0 25px rgba(0,0,0,0.2);
+  overflow:hidden;
+}
+
+.browser-header{
+  padding:15px;
+  background:linear-gradient(145deg,#ddd,#f7f7f7);
+}
+
+.song{
+  padding:15px;
+  border-bottom:1px solid #eee;
+  cursor:pointer;
+}
+
+#lyrics{
+  padding:25px;
+  background:#fafafa;
+}
+
+/* IMAGE VIEWER */
+#imgViewer{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(4px);
+  align-items:center;
+  justify-content:center;
+  z-index:2000;
+}
+
+#imgViewer img{
+  max-width:90%;
+  max-height:90%;
+  border-radius:20px;
+  animation:zoom .3s ease;
+}
+
+@keyframes zoom{
+  from{transform:scale(.8);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOCK -->
+<div id="lock">
+  <div class="lock-box">
+    <h2>💿 year we started dating</h2>
+    <input type="password" id="password">
+    <button onclick="unlock()">Unlock</button>
+  </div>
+</div>
+
+<div id="content" style="display:none">
+
+<!-- TIMER -->
+<section>
+  <div class="card timer-area">
+    <div id="timer"></div>
+    <div class="polaroid-grid">
+      <div class="polaroid"><img src="https://scontent.fmnl16-1.fna.fbcdn.net/v/t39.30808-6/486398405_29603765142570685_3079987047011804833_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=f727a1&_nc_eui2=AeHWretMSAkkNtnyMGp5xxVpxUaqooNE0eDFRqqig0TR4IpYPniALh0_PSur1zPiFctZIoQvs_bpPjD28lzc8bOZ&_nc_ohc=TdB6pz2sXEkQ7kNvwGuD3u2&_nc_oc=AdnK4apV_Yy017oGrlzSzh_W3aEIAVM81CRbAwBb8Kbzj-PpoWYgdkA5L5DovqPo-6E&_nc_zt=23&_nc_ht=scontent.fmnl16-1.fna&_nc_gid=KtTPs1l3gqrqcZJ8LfFtIA&oh=00_Afp0vaeyvlqrSnPz4PTCmIYDD0bJPAomfs15A8HitMZd4Q&oe=69753219"></div>
+      <div class="polaroid"><img src="https://scontent.fmnl16-1.fna.fbcdn.net/v/t39.30808-6/485754984_29603762515904281_4280297726451925737_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=f727a1&_nc_eui2=AeH7KE8mhBpOQusg4MMhIwT-Q0KZKaU-1ppDQpkppT7WmvCMceSXk5cUZYy94A4na4JxWDioh7Y00503G925mUog&_nc_ohc=nvD8LbINYGwQ7kNvwEdHjOg&_nc_oc=AdmmcQWXeabNf3BAdlLFc9PQC446sM49w6C03uUTiq9eZRMWgABUZU5rk9x5f1__QXw&_nc_zt=23&_nc_ht=scontent.fmnl16-1.fna&_nc_gid=0TVqRnccYHJTMxYLvvei_A&oh=00_AfqJPUMoEgQetpHMknHrrBXm19NtUDETYDyxAIQc_XuYWw&oe=6975504E"></div>
+      <div class="polaroid"><img src="https://scontent.fmnl16-1.fna.fbcdn.net/v/t39.30808-6/488651953_29744431341837397_2637715027530838206_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=f727a1&_nc_eui2=AeG_7X8vwqZ7dKDwH3tTBExLqrMp2pR8chyqsynalHxyHCSEl9Dcew_p_eodeEVRA81EgwmrIKJUjUVMs1hpM_bH&_nc_ohc=HICQXcMuc58Q7kNvwF0UP0w&_nc_oc=Adkr0wFTOYouX2AWE0r1O1ittmcgJ5qC3mqEAn_cCDxyMWafxSX6HkMWHcz0JUu9MIk&_nc_zt=23&_nc_ht=scontent.fmnl16-1.fna&_nc_gid=2LHun1g6dRG-IdckVs24zQ&oh=00_AfpuwW42jKWNEF-C4uj5ZlSRCXRI7yMqqazExeUKGbbBqA&oe=697547E9"></div>
+      <div class="polaroid"><img src="https://scontent.fmnl16-1.fna.fbcdn.net/v/t39.30808-6/488763719_29744434668503731_7817680227929746475_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=f727a1&_nc_eui2=AeF597P2dQDspBb0Y_A51FZNrlfz8YI7scCuV_PxgjuxwOJlMgt0MgbGzVuKHmQIfNt6r7JYfCiKiO3g-ysYWS8S&_nc_ohc=l92JkLVL_DMQ7kNvwEnWx_i&_nc_oc=Adm5KDf7wZAXd4q4i1ztX1EUozoMIkGVrKia9Dd--8D841ce8AMrxGUSxIrZbEhXdGM&_nc_zt=23&_nc_ht=scontent.fmnl16-1.fna&_nc_gid=5Ha1VNFLweDZcdwBFKscRw&oh=00_AfrG8KAPXE-RVLB7gzxB9L0cgeWyUN5PZOz-Lkf6BKdubA&oe=6975456B"></div>
+      <div class="polaroid"><img src="https://scontent.fmnl16-1.fna.fbcdn.net/v/t39.30808-6/488418271_29744464578500740_8258521856686175932_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=f727a1&_nc_eui2=AeG9u6zFmBODcGJOrh-ZA0l9bb0xNLlrpIptvTE0uWukip7VhmDziNDTwI5vuAj2TQe3nxv4Ba1TGAzSsnxGp5Rc&_nc_ohc=L8CIC7co5kEQ7kNvwG2dB4n&_nc_oc=AdlcgtkrS4r11Eo2rsFTEx0guPEvJkFsIT53OSFi98qmgCINgiyvWZNDFJge0srPU1A&_nc_zt=23&_nc_ht=scontent.fmnl16-1.fna&_nc_gid=c_xHze1oLzQY5temUZ2VHw&oh=00_AfrUcege9qs_L-rAO7udsdh3LMwZ696Sn74L8vOIx2bunQ&oe=697547E1"></div>
+      <div class="polaroid"><img src="https://scontent.fmnl16-1.fna.fbcdn.net/v/t39.30808-6/488248670_29744435165170348_5558422121474539048_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=f727a1&_nc_eui2=AeFuuEZio_m9Tz9jehbFGhHivuvF1-OzvQu-68XX47O9C6Xzgw4M80-T87_jpCJ2S3Mx5jwcI4mtFnBW16I6SEif&_nc_ohc=l-oJMJ_0GbAQ7kNvwHHvi60&_nc_oc=AdkLWTvF0v3U5ctGbleHQADUSm6u69O4kSr15_JoSx0q78lkl9QGBnqUVjt03spnDsA&_nc_zt=23&_nc_ht=scontent.fmnl16-1.fna&_nc_gid=FSHF4GXQ8V0k19LLutzCxw&oh=00_Afqy8XF7qIYoIsa2DtvsFSrhibJFNJMVYGA_74XKZmCy0Q&oe=69755E03"></div>
+    </div>
+  </div>
+</section>
+
+<!-- NOTES -->
+<section>
+  <div class="card">
+    <h2>Love Notes 💌</h2>
+    <div class="envelopes">
+      <div class="envelope" onclick="openNote('proud ako sayo lagi, baby.')"></div>
+      <div class="envelope" onclick="openNote('i miss u po')"></div>
+      <div class="envelope" onclick="openNote('i love u po ^3^')"></div>
+    </div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section>
+  <div class="card quiz">
+    <h2>Pop Quiz 💕</h2>
+    <p style="font-size:28px;text-align:center;">Cassandra's favorite flower?</p>
+    <button onclick="alert('Try again 😅')">Roses</button>
+    <button onclick="alert('Try again 😅')">Sunflowers</button>
+    <button onclick="alert('Correct 💖')">Tulips</button>
+    <button onclick="alert('Try again 😅')">Carnations</button>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section>
+  <div class="card">
+    <div class="gallery-title">Cassandra's Gallery</div>
+    <div class="polaroid-grid">
+      <div class="polaroid"><img src="https://scontent.fmnl16-1.fna.fbcdn.net/v/t39.30808-6/615458792_34159421740338313_1938564706453240007_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=f727a1&_nc_eui2=AeG8u18xG70Uhvre7hZeg2LfLH5CwrKyccMsfkLCsrJxw_EF-TS03ThPF1ow0QO27iPpl-JQWEiYjI_DxQRdrUD8&_nc_ohc=iWBnSTxnYVYQ7kNvwFTmL9J&_nc_oc=Adm6xFNSaX23cYdYFtpf4Zq3P-8-dsujsn8wZWUAwWkWvuCMr9YyMfv7jfiOZTS90Ak&_nc_zt=23&_nc_ht=scontent.fmnl16-1.fna&_nc_gid=uBn-MhApK4D_7LdDhKOg5Q&oh=00_Afo-vFjEAm-OJTT1xGnDwIEzCvyTOzdcccReoSuXhPNOIA&oe=6975627B"></div>
+      <div class="polaroid"><img src="https://scontent.fmnl16-1.fna.fbcdn.net/v/t39.30808-6/616148121_34159422423671578_6420755802770204196_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=f727a1&_nc_eui2=AeEoUfCkpNqBBhqk0B-Q7x87bHeRB9o0Xvtsd5EH2jRe-3tob7teC5LZEMcCGrSdcVfOJgpfEgLqeBslyAvmUxiR&_nc_ohc=pj_CIWprkCYQ7kNvwG4mdgl&_nc_oc=Adm6otYfkjqFj6o3kgeAAGxgTUo74QKl0knYA0xmODwgmCTNGwTwnxg1pdzrXolZsYw&_nc_zt=23&_nc_ht=scontent.fmnl16-1.fna&_nc_gid=70I5KEdJA7PcY5Zwka8xLA&oh=00_AfoSCfpF2v1gK59I3pVYrdhdEFhyZFcPjWa6mKjqNEXqKw&oe=697556E0"></div>
+      <div class="polaroid"><img src="https://scontent.fmnl16-1.fna.fbcdn.net/v/t39.30808-6/616407891_34159423203671500_3957733395624034472_n.jpg?stp=cp6_dst-jpg_tt6&_nc_cat=109&ccb=1-7&_nc_sid=f727a1&_nc_eui2=AeGsCYoXg2qVErr82cDv3TRaGaF_NF0ryzcZoX80XSvLNxK9RISsTNRgqWj7NBuhOsYenkMjoa7Ev7PhZSkuBMd4&_nc_ohc=KqOt8GkRZxEQ7kNvwEuv0G1&_nc_oc=AdkxdS6I1n6NcfjmY2PUbwTYgfqZ7wzmRmmxe7WPaEBeVQfpJT6mXbTKCQsgfsRy2UM&_nc_zt=23&_nc_ht=scontent.fmnl16-1.fna&_nc_gid=-1Glp8Iucel7ms8nc3QIKg&oh=00_Afr_Z-bWkAJY7Rvol9-rGjDNOzeOOtKaaZnh9FAIMFeqhQ&oe=6975619F"></div>
+      <div class="polaroid"><img src="https://scontent.fmnl16-1.fna.fbcdn.net/v/t39.30808-6/616785030_34158878693725951_621712670238761784_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=f727a1&_nc_eui2=AeHmR2beGAEhIb1oiXsGizc9atWkanLFhAZq1aRqcsWEBiyeUE4eTn3O59W59qDojo6RnNHBDZ-JGngxnlqV6Uad&_nc_ohc=WfC_B0QaOmIQ7kNvwH2m8TS&_nc_oc=AdmfhQvv6loG-q3vsw6aXSD7ll3KH734R0BCM22pTFtLcXw_NuyASIN8_0UF1Bj65uw&_nc_zt=23&_nc_ht=scontent.fmnl16-1.fna&_nc_gid=attvUaND8PaR6rrShiMatA&oh=00_AfrzMjOosWsy1KdVQtIqPWWwb0cX0ujTUWwXgB_JIMMcNA&oe=697567FB"></div>
+      <div class="polaroid"><img src="https://scontent.fmnl16-1.fna.fbcdn.net/v/t39.30808-6/616832654_34158878867059267_7783417716892536289_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=f727a1&_nc_eui2=AeF-30qHFIPmSi93HZTPBU_YOdxKwTXQaeY53ErBNdBp5lkxPvupthC-jy3JvmGrRitSDc_G2tQEdrLQ_4DUCirZ&_nc_ohc=Bd8wEHMbGqAQ7kNvwEEc2NC&_nc_oc=AdkQmayCYonttmCWJVrBeEICau6JxQHCw-WxPp1qbxhDNmZJfyKimDIYLdQbnTgWsmA&_nc_zt=23&_nc_ht=scontent.fmnl16-1.fna&_nc_gid=BlCzyJxhVyXQjemQMLkCdA&oh=00_AfpgJNBe-aHndYE13Uf44truJOlJJCfFhSeq_0o8cCKiQQ&oe=69754075"></div>
+      <div class="polaroid"><img src="https://scontent.fmnl16-1.fna.fbcdn.net/v/t39.30808-6/616828108_34158879537059200_6934833604775942668_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=f727a1&_nc_eui2=AeGjLnlwl5ZnM3ylDWs7zTPMHBoZrgy_vN4cGhmuDL-83r_BeMZJAh3jmadz7Z3EItVj8OugjVSvzOEjnf2tc-6Q&_nc_ohc=3WjWFTBkuFEQ7kNvwHbSlhH&_nc_oc=AdmtZpA48fMW-rswzbJZY3g6iUHXuoRIkcEfILYX6hRTlkdPxOlgNyP6oD5APwttkvM&_nc_zt=23&_nc_ht=scontent.fmnl16-1.fna&_nc_gid=0m5sZXQVIiMnT8e9aqMXug&oh=00_AfoH5sI-jcQOGeeXgdG78y8R3Bgqnfa6JL3Kj9dJLSqL-w&oe=697557BD"></div>
+    </div>
+  </div>
+</section>
+
+<!-- IMAGE VIEWER -->
+<div id="imgViewer" onclick="closeViewer()">
+  <img id="fullImg">
+</div>
+
+<!-- MUSIC -->
+<section>
+  <div class="card">
+    <h2>Music Archive 🎧</h2>
+    <div class="browser">
+      <div class="browser-header">My Favorite Songs</div>
+      <div class="song" onclick="showLyrics('Over and over Ill love you so tender')">Ears and Rhymes by December Avenue</div>
+      <div class="song" onclick="showLyrics('Mamamatay akong nakangiti Kapag ikaw ang nasa aking tabi')">Kalapastangan by fitterkarma</div>
+      <div class="song" onclick="showLyrics('Tahanan mo ako Di magbabago yun')">Tahanan by el manu</div>
+      <div class="song" onclick="showLyrics('Pero iba ang saya pag kasama kita')">Ngalan Mo by Yden</div>
+      <div class="song" onclick="showLyrics('Kahit ikay mapalayo sa piling ko Ikaw pa rin ang pipiliin ko')">Ikaw Pa Rin Ang Pipiliin Ko by Cup of Joe</div>
+      <div id="lyrics">Click a song 💿</div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<!-- NOTE POPUP -->
+<div id="noteOverlay" onclick="this.style.display='none'">
+  <div class="note" onclick="event.stopPropagation()">
+    <p id="noteText" style="font-size:26px;"></p>
+  </div>
+</div>
+
+<script>
+const correctPassword="2023";
+
+function unlock(){
+  if(password.value===correctPassword){
+    lock.style.display="none";
+    content.style.display="block";
+  } else alert("Wrong password 💔");
+}
+
+const startDate=new Date("January 10, 2023");
+setInterval(()=>{
+  const now=new Date();
+  const days=Math.floor((now-startDate)/(1000*60*60*24));
+  timer.innerText=days+" days since January 10, 2023";
+},1000);
+
+function openNote(text){
+  noteText.innerText=text;
+  noteOverlay.style.display="flex";
+}
+
+function showLyrics(text){
+  lyrics.innerText=text;
+}
+
+/* IMAGE CLICK */
+document.addEventListener("click",e=>{
+  if(e.target.tagName==="IMG" && e.target.parentElement.classList.contains("polaroid")){
+    fullImg.src=e.target.src;
+    imgViewer.style.display="flex";
+  }
+});
+
+function closeViewer(){
+  imgViewer.style.display="none";
+}
+</script>
+
+</body>
+</html>
